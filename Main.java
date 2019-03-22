@@ -1,21 +1,43 @@
-package application;
-
+package Animation;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("fx.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
-        primaryStage.show();
-    }
+    public void start(Stage ps) {
+        ps.setTitle("Animation example");
+        Group root = new Group();
+        Scene myScene = new Scene(root);
+        ps.setScene(myScene);
 
+        Canvas canvas = new Canvas(512, 512);
+        root.getChildren().add(canvas);
+
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        Image road = new Image("doroga.jpg");
+        Image car = new Image("car.jpg");
+
+        final long startTime = System.nanoTime();
+
+        new AnimationTimer() {
+            @Override
+            public void handle(long t) {
+                double diff = (t - startTime) / 1000000000.0;
+
+                gc.drawImage(road, 0, Math.sqrt(Math.exp(diff)));
+                gc.drawImage(car, 256, 256);
+            }
+        }.start();
+        ps.show();
+    }
 
     public static void main(String[] args) {
         launch(args);
